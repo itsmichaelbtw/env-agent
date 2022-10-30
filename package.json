@@ -1,0 +1,57 @@
+{
+  "name": "env-agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-mocha -p tsconfig.json --recursive test/**/*.test.ts",
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "release:patch": "standard-version --release-as patch",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:prerelease": "standard-version --prerelease",
+    "release": "standard-version",
+    "push:tags": "git push origin --follow-tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsmichaelbtw/env-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itsmichaelbtw/env-agent/issues"
+  },
+  "homepage": "https://github.com/itsmichaelbtw/env-agent#readme",
+  "keywords": [
+    "environment-variables",
+    "dotenv",
+    "env",
+    "env-agent"
+  ],
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "dotenv-expand": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.3",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.11.7",
+    "chai": "^4.3.6",
+    "lint-staged": "^13.0.3",
+    "mocha": "^10.1.0",
+    "rimraf": "^3.0.2",
+    "standard-version": "^9.5.0",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^4.8.4"
+  },
+  "standard-version": {
+    "scripts": {
+      "posttag": "npm run push:tags"
+    }
+  },
+  "author": "Michael Cizek",
+  "contributors": [
+    "Michael Cizek <itsmichaelbtw@gmail.com"
+  ],
+  "license": "MIT"
+}
