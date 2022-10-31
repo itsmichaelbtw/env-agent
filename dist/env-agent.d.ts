@@ -1,12 +1,8 @@
 /// <reference types="node" />
-export declare const DOTENV_FILENAME = ".env";
 interface EnvType {
     [key: string]: string;
 }
 interface EnvManipulator {
-    /**
-     * Parses a .env file and returns an object containing the environment variables.
-     */
     parse(file: Buffer): EnvType;
     /**
      * Configures the environment variables by reading the .env file and sets the variable
@@ -21,6 +17,7 @@ interface EnvManipulator {
      * Retrieve an environment variable from the current process.
      */
     get(key?: string): string;
+    DOTENV_FILENAME: string;
 }
 declare const envAgent: EnvManipulator;
 export default envAgent;

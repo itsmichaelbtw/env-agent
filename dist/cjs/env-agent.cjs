@@ -5,9 +5,13 @@
     * @license MIT
     */
 
-import path from 'path';
-import fs from 'fs';
-import os from 'os';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
@@ -161,5 +165,5 @@ var envAgent = {
   DOTENV_FILENAME: DOTENV_FILENAME
 };
 
-export { envAgent as default };
-//# sourceMappingURL=env-agent.js.map
+exports.default = envAgent;
+//# sourceMappingURL=env-agent.cjs.map
