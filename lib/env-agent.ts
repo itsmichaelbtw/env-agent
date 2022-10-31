@@ -4,7 +4,7 @@ import os from "os";
 
 import { isUndefined, hasOwnProperty } from "./utils";
 
-const DOTENV_FILENAME = ".env";
+export const DOTENV_FILENAME = ".env";
 const DOTENV_LINE = /^\s*([^\#]+)\s*=\s*([^#]*)/m;
 
 interface EnvType {
