@@ -61,7 +61,9 @@ function parse(file: Buffer): EnvType {
             key = key.trim();
             value = value.trim();
 
-            environmentVariables[key] = value;
+            if (key) {
+                environmentVariables[key] = value;
+            }
         }
 
         return environmentVariables;
