@@ -94,6 +94,10 @@ function configure(): EnvType {
 }
 
 function get(key?: string): string {
+    if (isUndefined(key)) {
+        return "";
+    }
+
     const value = process.env[key];
 
     if (isUndefined(value)) {
