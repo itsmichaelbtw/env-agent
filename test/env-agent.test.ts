@@ -2,8 +2,10 @@ import fs from "fs";
 import path from "path";
 import chai from "chai";
 
-import envAgent, { DOTENV_FILENAME } from "../lib/env-agent";
+import envAgent from "../lib/env-agent";
 import { hasOwnProperty } from "../lib/utils";
+
+const DOTENV_FILENAME = envAgent.DOTENV_FILENAME;
 
 const parsedEnvironmentVariables = {
     PORT: "3000",

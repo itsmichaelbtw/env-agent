@@ -4,7 +4,7 @@ import os from "os";
 
 import { isUndefined, hasOwnProperty } from "./utils";
 
-export const DOTENV_FILENAME = ".env";
+const DOTENV_FILENAME = ".env";
 const DOTENV_LINE = /^\s*([^\#]+)\s*=\s*([^#]*)/m;
 
 interface EnvType {
@@ -16,7 +16,6 @@ interface EnvManipulator {
      * Parses a .env file and returns an object containing the environment variables.
      */
     parse(file: Buffer): EnvType;
-
     /**
      * Configures the environment variables by reading the .env file and sets the variable
      * if it does not exist.
@@ -32,6 +31,11 @@ interface EnvManipulator {
      * Retrieve an environment variable from the current process.
      */
     get(key?: string): string;
+
+    /**
+     * Default filename for the .env file.
+     */
+    DOTENV_FILENAME: string;
 }
 
 function parse(file: Buffer): EnvType {
@@ -115,7 +119,8 @@ const envAgent: EnvManipulator = {
     parse: parse,
     configure: configure,
     get: get,
-    set: set
+    set: set,
+    DOTENV_FILENAME: DOTENV_FILENAME
 };
 
 export default envAgent;
