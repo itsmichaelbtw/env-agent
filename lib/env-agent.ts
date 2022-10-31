@@ -38,7 +38,7 @@ function parse(file: Buffer): EnvType {
     try {
         const environmentVariables: EnvType = {};
         const fileAsString = file.toString();
-        const lines = fileAsString.split(os.EOL);
+        const lines = fileAsString.replace(os.EOL, "\n").split(/\n/);
 
         for (const potentialLine of lines) {
             const isMatch = DOTENV_LINE.test(potentialLine);
