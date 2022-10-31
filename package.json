@@ -6,7 +6,7 @@
   "scripts": {
     "test": "ts-mocha -p tsconfig.json --recursive test/**/*.test.ts",
     "clean": "rimraf dist",
-    "build": "tsc",
+    "build": "npm run clean && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
     "release:patch": "standard-version --release-as patch",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
@@ -28,10 +28,6 @@
     "env",
     "env-agent"
   ],
-  "dependencies": {
-    "dotenv": "^16.0.3",
-    "dotenv-expand": "^9.0.0"
-  },
   "devDependencies": {
     "@types/chai": "^4.3.3",
     "@types/mocha": "^10.0.0",
