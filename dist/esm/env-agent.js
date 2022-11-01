@@ -1,5 +1,5 @@
 /**
-    * env-agent v1.0.0
+    * env-agent v1.1.0
     * https://github.com/itsmichaelbtw/env-agent#readme
     * (c) 2022 Michael Cizek
     * @license MIT
@@ -214,6 +214,7 @@ var EnvAgent = /*#__PURE__*/function () {
               if (this.options.strict && !_value) {
                 continue;
               }
+              _value = _value.replace(/(^['"]|['"]$)/g, "");
               environmentVariables[_key] = _value;
             }
           }
@@ -247,12 +248,6 @@ var EnvAgent = /*#__PURE__*/function () {
           return {};
         }
         for (var _key2 in env) {
-          if (hasOwnProperty(process.env, _key2)) {
-            if (this.options.overwrite !== true) {
-              this.handleDebug("Environment variable ".concat(_key2, " already exists, skipping"), "yellow");
-              continue;
-            }
-          }
           this.set(_key2, env[_key2]);
         }
         return env;
@@ -277,6 +272,14 @@ var EnvAgent = /*#__PURE__*/function () {
   }, {
     key: "set",
     value: function set(key, value) {
+      if (hasOwnProperty(process.env, key) && this.options.overwrite !== true) {
+        this.handleDebug("Environment variable ".concat(key, " already exists, skipping"), "yellow");
+        return;
+      }
+      if (this.$options.strict && !value) {
+        this.handleDebug("Environment variable ".concat(key, " is not defined, skipping"), "yellow");
+        return;
+      }
       process.env[key] = value;
       this.handleDebug("Set ".concat(key, " to ").concat(value), "green");
     }

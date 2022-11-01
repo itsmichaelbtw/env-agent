@@ -27,7 +27,7 @@ interface EnvManipulator {
 }
 interface ConfigurableOptions {
     /**
-     * When attempting to load the .env file, specify whether errors should be thrown or not,
+     * When attempting to load the .env file, specify whether errors should be thrown or not.
      *
      * If set to false, operations will continue as normal.
      *
