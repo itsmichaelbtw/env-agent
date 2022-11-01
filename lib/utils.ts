@@ -8,3 +8,7 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
 ): obj is X & Record<Y, unknown> {
     return obj.hasOwnProperty(prop);
 }
+
+export function shallowMerge<T, U>(target: T, source: U): T & U {
+    return Object.assign({}, target, source);
+}
