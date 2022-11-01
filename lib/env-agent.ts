@@ -41,7 +41,7 @@ interface EnvManipulator {
 
 interface ConfigurableOptions {
     /**
-     * When attempting to load the .env file, specify whether errors should be thrown or not,
+     * When attempting to load the .env file, specify whether errors should be thrown or not.
      *
      * If set to false, operations will continue as normal.
      *
@@ -163,6 +163,7 @@ class EnvAgent implements EnvManipulator {
                         continue;
                     }
 
+                    value = value.replace(/(^['"]|['"]$)/g, "");
                     environmentVariables[key] = value;
                 }
             }
@@ -199,17 +200,6 @@ class EnvAgent implements EnvManipulator {
             }
 
             for (const key in env) {
-                if (hasOwnProperty(process.env, key)) {
-                    if (this.options.overwrite !== true) {
-                        this.handleDebug(
-                            `Environment variable ${key} already exists, skipping`,
-                            "yellow"
-                        );
-
-                        continue;
-                    }
-                }
-
                 this.set(key, env[key]);
             }
 
@@ -241,8 +231,28 @@ class EnvAgent implements EnvManipulator {
     }
 
     public set(key: string, value: string): void {
-        process.env[key] = value;
+        if (
+            hasOwnProperty(process.env, key) &&
+            this.options.overwrite !== true
+        ) {
+            this.handleDebug(
+                `Environment variable ${key} already exists, skipping`,
+                "yellow"
+            );
 
+            return;
+        }
+
+        if (this.$options.strict && !value) {
+            this.handleDebug(
+                `Environment variable ${key} is not defined, skipping`,
+                "yellow"
+            );
+
+            return;
+        }
+
+        process.env[key] = value;
         this.handleDebug(`Set ${key} to ${value}`, "green");
     }
 
