@@ -1,5 +1,5 @@
 /**
-    * env-agent v1.1.0
+    * env-agent v1.1.1
     * https://github.com/itsmichaelbtw/env-agent#readme
     * (c) 2022 Michael Cizek
     * @license MIT
@@ -118,6 +118,9 @@ function hasOwnProperty(obj, prop) {
 function shallowMerge(target, source) {
   return Object.assign({}, target, source);
 }
+function removeQuotes(value) {
+  return value.replace(/(^['"]|['"]$)/g, "");
+}
 
 var colors = {
   red: "\x1b[31m",
@@ -136,11 +139,14 @@ function debug(message, color) {
 
 var DOTENV_FILENAME = ".env";
 var DOTENV_LINE = /^\s*([^\#]+)\s*=\s*([^#]*)/m;
+var DOTENV_EXPANSION = /\$\{?(\w+)\}?/g;
+var DOTENV_EXPANSION_KEY = /\$|\{|\}/g;
 var defaults = {
   silent: true,
   strict: false,
   overwrite: false,
   encoding: "utf8",
+  expand: "none",
   debug: false
 };
 var EnvAgent = /*#__PURE__*/function () {
@@ -214,8 +220,7 @@ var EnvAgent = /*#__PURE__*/function () {
               if (this.options.strict && !_value) {
                 continue;
               }
-              _value = _value.replace(/(^['"]|['"]$)/g, "");
-              environmentVariables[_key] = _value;
+              environmentVariables[_key] = removeQuotes(_value);
             }
           }
         } catch (err) {
@@ -247,6 +252,7 @@ var EnvAgent = /*#__PURE__*/function () {
           this.handleDebug("No environment variables found. You may have an empty .env file", "yellow");
           return {};
         }
+        this.expand(env, this.options.expand, false);
         for (var _key2 in env) {
           this.set(_key2, env[_key2]);
         }
@@ -255,6 +261,49 @@ var EnvAgent = /*#__PURE__*/function () {
         this.handleErrorException(error);
         return {};
       }
+    }
+  }, {
+    key: "expand",
+    value: function expand() {
+      var variables = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "project";
+      var forceSet = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      if (mode === "none" || !mode) {
+        return variables;
+      }
+      var env = mode === "project" ? variables : process.env;
+      for (var _key3 in variables) {
+        var _value2 = variables[_key3];
+        if (typeof _value2 !== "string") {
+          continue;
+        }
+        var match = _value2.match(DOTENV_EXPANSION);
+        if (match === null) {
+          continue;
+        }
+        var attemptedExpansion = match.reduce(function (acc, variable) {
+          var variableName = variable.replace(DOTENV_EXPANSION_KEY, "");
+          if (variableName in env) {
+            var variableValue = env[variableName];
+            if (isUndefined(variableValue)) {
+              return acc.replace(variable, "");
+            }
+            return acc.replace(variable, variableValue);
+          }
+          return acc;
+        }, _value2);
+        if (this.options.strict && !attemptedExpansion) {
+          delete variables[_key3];
+          continue;
+        }
+        var expandedValue = removeQuotes(attemptedExpansion.trim());
+        variables[_key3] = expandedValue;
+        if (forceSet) {
+          process.env[_key3] = expandedValue;
+          this.handleDebug("Expanded ".concat(_key3), "green");
+        }
+      }
+      return variables;
     }
   }, {
     key: "get",
@@ -281,7 +330,7 @@ var EnvAgent = /*#__PURE__*/function () {
         return;
       }
       process.env[key] = value;
-      this.handleDebug("Set ".concat(key, " to ").concat(value), "green");
+      this.handleDebug("Set ".concat(key, " to process.env"), "green");
     }
   }, {
     key: "reset",

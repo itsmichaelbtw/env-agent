@@ -2,6 +2,7 @@
 interface EnvType {
     [key: string]: string;
 }
+declare type ExpansionMode = "none" | "project" | "machine";
 interface EnvManipulator {
     /**
      * Parses a .env file and returns an object containing the environment variables.
@@ -35,7 +36,20 @@ interface ConfigurableOptions {
      */
     silent?: boolean;
     /**
+     * Choose to expand variables defined in your .env file. Select the expansion mode
+     * that best suits your needs.
+     *
+     * - `none` - No expansion will be performed.
+     * - `project` - Expand variables defined in the .env file.
+     * - `machine` - Expand variables defined on your machine's environment.
+     *
+     * Defaults to `none`.
+     */
+    expand?: ExpansionMode;
+    /**
      * When parsing variables, ensure that values are defined before attempting to set them.
+     * Expanding variables will ensure the value is also defined. If not, the variable
+     * that was attempted will be removed from the end result.
      *
      * Defaults to `false`.
      */
@@ -76,6 +90,7 @@ declare class EnvAgent implements EnvManipulator {
     create(): EnvAgent;
     parse(file: Buffer | string): EnvType;
     configure(options?: ConfigurableOptions): EnvType;
+    expand(variables?: EnvType, mode?: ExpansionMode, forceSet?: boolean): EnvType;
     get(key?: string): string;
     set(key: string, value: string): void;
     reset(): void;
