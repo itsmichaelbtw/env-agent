@@ -7,29 +7,25 @@ import { hasOwnProperty, shallowMerge } from "../lib/utils";
 
 const DOTENV_FILENAME = envAgent.DOTENV_FILENAME;
 
-const parsedEnvironmentVariables = {
-    PORT: "3000",
-    NODE_ENV: "development",
-    PASSWORD: "123456",
-    MONGO_URL: "mongodb://localhost:27017",
-    MONGO_PASSWORD: "$PASSWORD",
-    MISSING_VAR: ""
-};
+const environmentVariables = `
+    # This is a comment
+    PORT=3000
+    NODE_ENV=development
+    # This is another comment
+    PASSWORD=123456
+    MONGO_URL=mongodb://localhost:27017
+    MONGO_PASSWORD=$PASSWORD # inline comment
+    MISSING_VAR= # empty value
+    ="MISSING KEY"
+    EXPAND_MISSING_VAR=$MISSING_VAR
+    EXPAND_PORT=\${PORT}
+    EXPAND_RECURSIVE=\${PORT} \${PASSWORD} \${NODE_ENV}
+`;
+
+const parsedEnvironmentVariables = envAgent.parse(environmentVariables);
 
 describe("envAgent", () => {
     before(() => {
-        const environmentVariables = `
-            # This is a comment
-            PORT=3000
-            NODE_ENV=development
-            # This is another comment
-            PASSWORD=123456
-            MONGO_URL=mongodb://localhost:27017
-            MONGO_PASSWORD=$PASSWORD # inline comment
-            MISSING_VAR= # empty value
-            ="MISSING KEY"
-        `;
-
         fs.writeFileSync(DOTENV_FILENAME, environmentVariables);
     });
 
@@ -61,38 +57,36 @@ describe("envAgent", () => {
         );
     });
 
-    describe("configuration options", () => {
+    describe("config", () => {
         it("should throw an error when `silent` is false (silent)", () => {
             const agent = envAgent.create();
 
-            const options = {
-                silent: false,
-                path: "fake/path"
-            };
-
-            chai.expect(() => agent.configure(options)).to.throw();
+            chai.expect(() =>
+                agent.configure({
+                    silent: false,
+                    path: "fake/path"
+                })
+            ).to.throw();
         });
 
         it("should not throw an error when `silent` is true (silent)", () => {
             const agent = envAgent.create();
 
-            const options = {
-                silent: true,
-                path: "fake/path"
-            };
-
-            chai.expect(() => agent.configure(options)).to.not.throw();
+            chai.expect(() =>
+                agent.configure({
+                    silent: true,
+                    path: "fake/path"
+                })
+            ).to.not.throw();
         });
 
         it("should set the variable when the value is not defined (strict)", () => {
             const agent = envAgent.create();
 
-            const options = {
+            agent.configure({
                 silent: true,
                 strict: false
-            };
-
-            agent.configure(options);
+            });
 
             chai.expect(hasOwnProperty(process.env, "MISSING_VAR")).to.be.true;
             chai.expect(agent.get("MISSING_VAR")).to.equal("");
@@ -101,14 +95,26 @@ describe("envAgent", () => {
         it("should not set the variable when the value is not defined (strict)", () => {
             const agent = envAgent.create();
 
-            const options = {
+            agent.configure({
                 strict: true
-            };
-
-            agent.configure(options);
+            });
 
             chai.expect(hasOwnProperty(process.env, "MISSING_VAR")).to.be.false;
             chai.expect(agent.get("MISSING_VAR")).to.equal("");
+        });
+
+        it("should expand variables when `expand` is set to `project`", () => {
+            const agent = envAgent.create();
+
+            agent.configure({
+                expand: "project"
+            });
+
+            chai.expect(agent.get("EXPAND_MISSING_VAR")).to.equal("");
+            chai.expect(agent.get("EXPAND_PORT")).to.equal("3000");
+            chai.expect(agent.get("EXPAND_RECURSIVE")).to.equal(
+                "3000 123456 development"
+            );
         });
 
         it("should allow a custom path to the .env file", () => {
@@ -137,6 +143,30 @@ describe("envAgent", () => {
         const env = envAgent.configure();
 
         chai.expect(env).to.deep.equal(parsedEnvironmentVariables);
+    });
+
+    it("should expand variables (project)", () => {
+        const env = envAgent.configure({
+            expand: "none"
+        });
+
+        const expanded = envAgent.expand(env, "project");
+
+        chai.expect(expanded).to.deep.equal({
+            PORT: "3000",
+            NODE_ENV: "development",
+            PASSWORD: "123456",
+            MONGO_URL: "mongodb://localhost:27017",
+            MONGO_PASSWORD: "123456",
+            MISSING_VAR: "",
+            EXPAND_MISSING_VAR: "",
+            EXPAND_PORT: "3000",
+            EXPAND_RECURSIVE: "3000 123456 development"
+        });
+
+        chai.expect(envAgent.get("EXPAND_RECURSIVE")).to.equal(
+            "3000 123456 development"
+        );
     });
 
     it("should be accessible from process.env", () => {
