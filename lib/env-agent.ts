@@ -2,21 +2,31 @@ import path from "path";
 import fs from "fs";
 import os from "os";
 
-import { isUndefined, hasOwnProperty, shallowMerge } from "./utils";
+import {
+    isUndefined,
+    hasOwnProperty,
+    shallowMerge,
+    removeQuotes
+} from "./utils";
 import { debug, DebugColors } from "./debug";
 
 const DOTENV_FILENAME = ".env";
 const DOTENV_LINE = /^\s*([^\#]+)\s*=\s*([^#]*)/m;
+const DOTENV_EXPANSION = /\$\{?(\w+)\}?/g;
+const DOTENV_EXPANSION_KEY = /\$|\{|\}/g;
 
 interface EnvType {
     [key: string]: string;
 }
+
+type ExpansionMode = "none" | "project" | "machine";
 
 interface EnvManipulator {
     /**
      * Parses a .env file and returns an object containing the environment variables.
      */
     parse(file: Buffer | string): EnvType;
+
     /**
      * Configures the environment variables by reading the .env file and sets the variable
      * if it does not exist.
@@ -50,7 +60,21 @@ interface ConfigurableOptions {
     silent?: boolean;
 
     /**
+     * Choose to expand variables defined in your .env file. Select the expansion mode
+     * that best suits your needs.
+     *
+     * - `none` - No expansion will be performed.
+     * - `project` - Expand variables defined in the .env file.
+     * - `machine` - Expand variables defined on your machine's environment.
+     *
+     * Defaults to `none`.
+     */
+    expand?: ExpansionMode;
+
+    /**
      * When parsing variables, ensure that values are defined before attempting to set them.
+     * Expanding variables will ensure the value is also defined. If not, the variable
+     * that was attempted will be removed from the end result.
      *
      * Defaults to `false`.
      */
@@ -91,6 +115,7 @@ const defaults: ConfigurableOptions = {
     strict: false,
     overwrite: false,
     encoding: "utf8",
+    expand: "none",
     debug: false
 };
 
@@ -163,8 +188,7 @@ class EnvAgent implements EnvManipulator {
                         continue;
                     }
 
-                    value = value.replace(/(^['"]|['"]$)/g, "");
-                    environmentVariables[key] = value;
+                    environmentVariables[key] = removeQuotes(value);
                 }
             }
 
@@ -199,6 +223,8 @@ class EnvAgent implements EnvManipulator {
                 return {};
             }
 
+            this.expand(env, this.options.expand, false);
+
             for (const key in env) {
                 this.set(key, env[key]);
             }
@@ -209,6 +235,64 @@ class EnvAgent implements EnvManipulator {
 
             return {};
         }
+    }
+
+    public expand(
+        variables: EnvType = {},
+        mode: ExpansionMode = "project",
+        forceSet: boolean = true
+    ): EnvType {
+        if (mode === "none" || !mode) {
+            return variables;
+        }
+
+        const env = mode === "project" ? variables : process.env;
+
+        for (const key in variables) {
+            const value = variables[key];
+
+            if (typeof value !== "string") {
+                continue;
+            }
+
+            const match = value.match(DOTENV_EXPANSION);
+
+            if (match === null) {
+                continue;
+            }
+
+            const attemptedExpansion = match.reduce((acc, variable) => {
+                const variableName = variable.replace(DOTENV_EXPANSION_KEY, "");
+
+                if (variableName in env) {
+                    const variableValue = env[variableName];
+
+                    if (isUndefined(variableValue)) {
+                        return acc.replace(variable, "");
+                    }
+
+                    return acc.replace(variable, variableValue);
+                }
+
+                return acc;
+            }, value);
+
+            if (this.options.strict && !attemptedExpansion) {
+                delete variables[key];
+                continue;
+            }
+
+            const expandedValue = removeQuotes(attemptedExpansion.trim());
+
+            variables[key] = expandedValue;
+
+            if (forceSet) {
+                process.env[key] = expandedValue;
+                this.handleDebug(`Expanded ${key}`, "green");
+            }
+        }
+
+        return variables;
     }
 
     public get(key?: string): string {
@@ -253,7 +337,7 @@ class EnvAgent implements EnvManipulator {
         }
 
         process.env[key] = value;
-        this.handleDebug(`Set ${key} to ${value}`, "green");
+        this.handleDebug(`Set ${key} to process.env`, "green");
     }
 
     public reset(): void {

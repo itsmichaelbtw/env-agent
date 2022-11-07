@@ -12,3 +12,7 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
 export function shallowMerge<T, U>(target: T, source: U): T & U {
     return Object.assign({}, target, source);
 }
+
+export function removeQuotes(value: string): string {
+    return value.replace(/(^['"]|['"]$)/g, "");
+}
