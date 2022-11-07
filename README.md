@@ -60,6 +60,7 @@ Configures the environment variables defined in your `.env` file. This function 
 | silent    | boolean | true          | When attempting to load the .env file, specify whether errors should be thrown or not. |
 | strict    | boolean | false         | Ensures variables are defined before being added to `process.env`.                     |
 | path      | string  | process.cwd() | The path to the `.env` file.                                                           |
+| expand    | string  | 'none'        | Choose to expand variables defined in your .env file.                                  |
 | overwrite | boolean | false         | Overwrite existing environment variables.                                              |
 | encoding  | string  | 'utf8'        | The encoding of the `.env` file when reading.                                          |
 | debug     | boolean | false         | Show debug messages when loading the `.env` file.                                      |
@@ -84,6 +85,24 @@ const env = envAgent.parse(`
 // or
 
 const env = envAgent.parse(Buffer.from('PORT=3000\nNODE_ENV=development'));
+```
+
+### `expand(variables, expansionMode)`
+
+Choose to expand variables defined in your .env file. It is recommened to expand variables when calling envAgent.configure(). Select the expansion mode that best suits your needs.
+
+- `none` - No expansion will be performed.
+- `project` - Expand variables defined in the .env file (does not expand current process.env variables).
+- `machine` - Expand variables defined on your machine's environment (expands current process.env variables).
+
+```js
+envAgent.configure({ expand: "project" }) // variables will automatically expand
+
+// or
+
+const variables = envAgent.configure();
+
+envAgent.expand(variables, "project"); // variables will expand
 ```
 
 ### `get(key)`
