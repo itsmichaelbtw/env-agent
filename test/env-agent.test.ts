@@ -131,12 +131,39 @@ describe("envAgent", () => {
         });
     });
 
-    it("should parse a buffer into an object", () => {
-        const envPath = path.resolve(process.cwd(), DOTENV_FILENAME);
-        const file = fs.readFileSync(envPath);
-        const env = envAgent.parse(file);
+    describe("parse()", () => {
+        it("should parse a file into an object", () => {
+            const envPath = path.resolve(process.cwd(), DOTENV_FILENAME);
+            const file = fs.readFileSync(envPath);
+            const env = envAgent.parse(file);
 
-        chai.expect(env).to.deep.equal(parsedEnvironmentVariables);
+            chai.expect(env).to.deep.equal(parsedEnvironmentVariables);
+        });
+
+        it("should parse a buffer into an object", () => {
+            const variables = Buffer.from("PORT=3000\nNODE_ENV=development");
+
+            const env = envAgent.parse(variables);
+
+            chai.expect(env).to.deep.equal({
+                PORT: "3000",
+                NODE_ENV: "development"
+            });
+        });
+
+        it("should parse a string into an object", () => {
+            const variables = `
+                PORT=3000
+                NODE_ENV=development
+            `;
+
+            const env = envAgent.parse(variables);
+
+            chai.expect(env).to.deep.equal({
+                PORT: "3000",
+                NODE_ENV: "development"
+            });
+        });
     });
 
     it("should configure variables from .env file", () => {
