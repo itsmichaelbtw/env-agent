@@ -41,6 +41,15 @@ describe("envAgent", () => {
         }
     });
 
+    it("should create a new instance", () => {
+        const agent = envAgent.create();
+
+        chai.expect(agent).to.be.an("object");
+        chai.expect(agent).to.have.property("load");
+        chai.expect(agent).to.have.property("parse");
+        chai.expect(agent).to.have.property("expand");
+    });
+
     it("should accept a configuration object", () => {
         const agent = envAgent.create();
 
@@ -50,7 +59,7 @@ describe("envAgent", () => {
             debug: false
         };
 
-        agent.configure(options);
+        agent.load(options);
 
         chai.expect(agent.options).to.deep.equal(
             shallowMerge(options, agent.options)
@@ -62,7 +71,7 @@ describe("envAgent", () => {
             const agent = envAgent.create();
 
             chai.expect(() =>
-                agent.configure({
+                agent.load({
                     silent: false,
                     path: "fake/path"
                 })
@@ -73,7 +82,7 @@ describe("envAgent", () => {
             const agent = envAgent.create();
 
             chai.expect(() =>
-                agent.configure({
+                agent.load({
                     silent: true,
                     path: "fake/path"
                 })
@@ -83,7 +92,7 @@ describe("envAgent", () => {
         it("should set the variable when the value is not defined (strict)", () => {
             const agent = envAgent.create();
 
-            agent.configure({
+            agent.load({
                 silent: true,
                 strict: false
             });
@@ -95,7 +104,7 @@ describe("envAgent", () => {
         it("should not set the variable when the value is not defined (strict)", () => {
             const agent = envAgent.create();
 
-            agent.configure({
+            agent.load({
                 strict: true
             });
 
@@ -106,7 +115,7 @@ describe("envAgent", () => {
         it("should expand variables when `expand` is set to `project`", () => {
             const agent = envAgent.create();
 
-            agent.configure({
+            agent.load({
                 expand: "project"
             });
 
@@ -125,9 +134,29 @@ describe("envAgent", () => {
                 path: "fake/path"
             };
 
-            agent.configure(options);
+            agent.load(options);
 
             chai.expect(agent.options.path).to.equal(options.path);
+        });
+    });
+
+    describe("load()", () => {
+        it("should load variables from a .env file", () => {
+            const env = envAgent.load();
+
+            chai.expect(env).to.deep.equal(parsedEnvironmentVariables);
+        });
+
+        it("should expand variables", () => {
+            const env = envAgent.create().load({
+                expand: "project"
+            });
+
+            chai.expect(env.EXPAND_MISSING_VAR).to.equal("");
+            chai.expect(env.EXPAND_PORT).to.equal("3000");
+            chai.expect(env.EXPAND_RECURSIVE).to.equal(
+                "3000 123456 development"
+            );
         });
     });
 
@@ -166,14 +195,8 @@ describe("envAgent", () => {
         });
     });
 
-    it("should configure variables from .env file", () => {
-        const env = envAgent.configure();
-
-        chai.expect(env).to.deep.equal(parsedEnvironmentVariables);
-    });
-
     it("should expand variables (project)", () => {
-        const env = envAgent.configure({
+        const env = envAgent.load({
             expand: "none"
         });
 
@@ -197,7 +220,7 @@ describe("envAgent", () => {
     });
 
     it("should be accessible from process.env", () => {
-        const env = envAgent.configure();
+        const env = envAgent.load();
 
         for (const key of Object.keys(env)) {
             chai.expect(hasOwnProperty(process.env, key)).to.be.true;
@@ -205,7 +228,7 @@ describe("envAgent", () => {
     });
 
     it("should get an environment variable", () => {
-        envAgent.configure();
+        envAgent.load();
 
         const port = envAgent.get("PORT");
         const nodeEnv = envAgent.get("NODE_ENV");
