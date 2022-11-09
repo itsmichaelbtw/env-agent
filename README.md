@@ -1,6 +1,6 @@
 # env-agent
 
-A zero-dependency package for reading environment variables into `process.env` at runtime. Easily parse, configure and expand environment variables from `.env` files. Provides sanity checks when parsing `.env` files and ensures all incoming variables are defined before being added to `process.env`.
+A zero-dependency package for reading environment variables into `process.env` at runtime. Easily parse, load and expand environment variables from `.env` files. Provides sanity checks when parsing `.env` files and ensures all incoming variables are defined before being added to `process.env`.
 
 [![Unit Tests](https://github.com/itsmichaelbtw/env-agent/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/itsmichaelbtw/env-agent/actions/workflows/unit-tests.yml)
 ![npm](https://img.shields.io/npm/v/env-agent)
@@ -21,16 +21,16 @@ PORT=3000
 NODE_ENV=development
 ```
 
-Then, in your project, import the `env-agent` package and call the `configure` function:
+Then, in your project, import the `env-agent` package and call the `load` function:
 
-> It is highly recommended to call the `configure` function as early as possible in your project. This will ensure all environment variables are available to your project as soon as possible.
+> It is highly recommended to call the `load` function as early as possible in your project. This will ensure all environment variables are available to your project as soon as possible.
 
 ### CommonJS:
 
 ```js
 const envAgent = require('env-agent').default;
 
-envAgent.configure();
+envAgent.load();
 ```
 
 ### ES6:
@@ -38,7 +38,7 @@ envAgent.configure();
 ```js
 import envAgent from 'env-agent';
 
-envAgent.configure();
+envAgent.load();
 
 // {
 //   PORT: 3000,
@@ -49,9 +49,9 @@ Now all the environment variables defined in your `.env` file are available in `
 
 ## API
 
-### `configure([, options])`
+### `load([, options])`
 
-Configures the environment variables defined in your `.env` file. This function should be called as early as possible in your project.
+loads the environment variables defined in your `.env` file. This function should be called as early as possible in your project.
 
 #### `options`
 
@@ -66,7 +66,7 @@ Configures the environment variables defined in your `.env` file. This function 
 | debug     | boolean | false         | Show debug messages when loading the `.env` file.                                      |
 
 ```js
-envAgent.configure({
+envAgent.load({
     silent: false,
     debug: true
 });
@@ -89,18 +89,18 @@ const env = envAgent.parse(Buffer.from('PORT=3000\nNODE_ENV=development'));
 
 ### `expand(variables, expansionMode)`
 
-Choose to expand variables defined in your .env file. It is recommened to expand variables when calling envAgent.configure(). Select the expansion mode that best suits your needs.
+Choose to expand variables defined in your .env file. It is recommened to expand variables when calling envAgent.load(). Select the expansion mode that best suits your needs.
 
 - `none` - No expansion will be performed.
 - `project` - Expand variables defined in the .env file (does not expand current process.env variables).
 - `machine` - Expand variables defined on your machine's environment (expands current process.env variables).
 
 ```js
-envAgent.configure({ expand: "project" }) // variables will automatically expand
+envAgent.load({ expand: "project" }) // variables will automatically expand
 
 // or
 
-const variables = envAgent.configure();
+const variables = envAgent.load();
 
 envAgent.expand(variables, "project"); // variables will expand
 ```

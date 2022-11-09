@@ -28,10 +28,10 @@ interface EnvManipulator {
     parse(file: Buffer | string): EnvType;
 
     /**
-     * Configures the environment variables by reading the .env file and sets the variable
+     * Loads the environment variables by reading the .env file and sets the variable
      * if it does not exist.
      */
-    configure(options: ConfigurableOptions): EnvType;
+    load(options: ConfigurableOptions): EnvType;
 
     /**
      * Programmatically set environment variables that are only available in the current process.
@@ -200,7 +200,7 @@ class EnvAgent implements EnvManipulator {
         }
     }
 
-    public configure(options: ConfigurableOptions = {}): EnvType {
+    public load(options: ConfigurableOptions = {}): EnvType {
         this.$options = shallowMerge(defaults, options);
 
         try {
