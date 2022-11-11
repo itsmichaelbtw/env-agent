@@ -29,7 +29,8 @@
     "release:major": "standard-version --release-as major",
     "release:prerelease": "standard-version --prerelease",
     "release": "standard-version",
-    "push:tags": "git push origin --follow-tags"
+    "push:tags": "git push origin --follow-tags",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -64,6 +65,7 @@
   },
   "standard-version": {
     "scripts": {
+      "prebump": "npm run build",
       "posttag": "npm run push:tags"
     }
   },
