@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/itsmichaelbtw/env-agent/compare/v1.2.0...v2.0.0) (2022-11-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **env-agent:** renamed `.configure()` to `.load()` for fitter clarity
+
+### What's New
+
+* **env-agent:** renamed `.configure()` to `.load()` for fitter clarity ([6d52265](https://github.com/itsmichaelbtw/env-agent/commit/6d5226563902fcff7030a8a0ae9cacbc470b7e55))
+
 ## [1.2.0](https://github.com/itsmichaelbtw/env-agent/compare/v1.1.1...v1.2.0) (2022-11-07)
 
 
