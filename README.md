@@ -105,13 +105,37 @@ const variables = envAgent.load();
 envAgent.expand(variables, "project"); // variables will expand
 ```
 
+You can denote a variable to be expanded by using the following syntax:
+
+- `$VARIABLE`
+- `${VARIABLE}`
+
+```bash
+# .env
+PORT=3000
+NODE_ENV=development
+HOST=localhost
+URL=http://${HOST}:$PORT # HOST and PORT will be expanded
+```
+
+```js
+envAgent.load({ expand: "project" });
+
+// {
+//   PORT: 3000,
+//   NODE_ENV: 'development',
+//   HOST: 'localhost',
+//   URL: 'http://localhost:3000'
+// }
+```
+
 ### `get(key)`
 
 Retrieve a single environment variable from `process.env`.
 
 ### `set(key, value)`
 
-Set a single environment variable in `process.env`. Ensures configuration rules are followed:
+Sets a single environment variable in `process.env`. Ensures configuration rules are followed:
 
 - If `strict` is `true`, the variable must be defined before being added to `process.env`.
 - If `overwrite` is `false`, the variable must not already exist in `process.env`.
