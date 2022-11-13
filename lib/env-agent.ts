@@ -152,10 +152,23 @@ class EnvAgent implements EnvManipulator {
         }
     }
 
+    /**
+     * Creates a new instance of EnvAgent. Not sure why you would want to
+     * do this, but it's here if you need it.
+     */
     public create(): EnvAgent {
         return new EnvAgent();
     }
 
+    /**
+     * Parses a Buffer or string and returns an object containing the environment variables.
+     *
+     * ```
+     * const env = envAgent.parse(fs.readFileSync(".env", "utf8"));
+     * // or
+     * const env = envAgent.parse(`FOO=bar\nBAR=baz`);
+     * ```
+     */
     public parse(file: Buffer | string): EnvType {
         try {
             const environmentVariables: EnvType = {};
@@ -200,6 +213,16 @@ class EnvAgent implements EnvManipulator {
         }
     }
 
+    /**
+     * The main entry point for loading the .env file. This method will
+     * attempt to load the .env file and set the environment variables.
+     *
+     * You can pass in an object to configure the behavior of the method.
+     *
+     * ```
+     * const env = envAgent.load();
+     * ```
+     */
     public load(options: ConfigurableOptions = {}): EnvType {
         this.$options = shallowMerge(defaults, options);
 
@@ -237,6 +260,12 @@ class EnvAgent implements EnvManipulator {
         }
     }
 
+    /**
+     * A method to expand variables defined in your .env file. It is
+     * recommended to expand variables when calling `load()`, but this
+     * method is available if you need to expand variables at a later
+     * time.
+     */
     public expand(
         variables: EnvType = {},
         mode: ExpansionMode = "project",
@@ -295,6 +324,9 @@ class EnvAgent implements EnvManipulator {
         return variables;
     }
 
+    /**
+     * Retrieve a single environment variable from `process.env`.
+     */
     public get(key?: string): string {
         if (isUndefined(key)) {
             this.handleDebug(
@@ -314,6 +346,9 @@ class EnvAgent implements EnvManipulator {
         return value;
     }
 
+    /**
+     * Sets a single environment variable in `process.env`.
+     */
     public set(key: string, value: string): void {
         if (
             hasOwnProperty(process.env, key) &&
