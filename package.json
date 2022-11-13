@@ -1,6 +1,6 @@
 {
   "name": "env-agent",
-  "version": null,
+  "version": "2.0.0",
   "description": "Easily parse, configure and expand environment variables from .env files at runtime.",
   "main": "dist/cjs/env-agent.cjs",
   "module": "dist/esm/env-agent.js",
@@ -24,11 +24,10 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && rollup -c rollup.config.js --bundleConfigAsCjs",
     "build:watch": "npm run build -- --watch",
-    "release:patch": "standard-version --release-as patch",
-    "release:minor": "standard-version --release-as minor",
-    "release:major": "standard-version --release-as major",
-    "release:prerelease": "standard-version --prerelease",
-    "release": "standard-version",
+    "release:patch": "npm run build && standard-version --release-as patch",
+    "release:minor": "npm run build && standard-version --release-as minor",
+    "release:major": "npm run build && standard-version --release-as major",
+    "release": "npm run build && standard-version",
     "push:tags": "git push origin --follow-tags",
     "prepublishOnly": "npm run build"
   },
@@ -65,7 +64,6 @@
   },
   "standard-version": {
     "scripts": {
-      "prebump": "npm run build",
       "posttag": "npm run push:tags"
     }
   },
