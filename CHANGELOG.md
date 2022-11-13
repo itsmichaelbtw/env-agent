@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [](https://github.com/itsmichaelbtw/env-agent/compare/v2.0.0...v) (2022-11-13)
+
+
+### What's New
+
+* added internal documentation ([4bb7334](https://github.com/itsmichaelbtw/env-agent/commit/4bb7334c30eabc3264f92c04594551fd8e75b274))
+
+
+### Fixed
+
+* incorrect build folder for v2.0.0 ([5aa40e0](https://github.com/itsmichaelbtw/env-agent/commit/5aa40e04758f0fb6c9591d7f8640b9fcc36a5661))
+
 ## [2.0.0](https://github.com/itsmichaelbtw/env-agent/compare/v1.2.0...v2.0.0) (2022-11-11)
 
 

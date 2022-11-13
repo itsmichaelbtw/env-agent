@@ -1,6 +1,6 @@
 {
   "name": "env-agent",
-  "version": "2.0.0",
+  "version": null,
   "description": "Easily parse, configure and expand environment variables from .env files at runtime.",
   "main": "dist/cjs/env-agent.cjs",
   "module": "dist/esm/env-agent.js",
