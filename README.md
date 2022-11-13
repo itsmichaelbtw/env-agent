@@ -7,8 +7,13 @@ A zero-dependency package for reading environment variables into `process.env` a
 
 ## Installation
 
+npm:
 ```bash
 $ npm install env-agent --save
+```
+yarn:
+```bash
+$ yarn add env-agent
 ```
 
 ## Usage
