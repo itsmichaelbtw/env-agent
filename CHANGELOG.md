@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [](https://github.com/itsmichaelbtw/env-agent/compare/v2.0.0...v) (2022-11-13)
+## [2.1.0](https://github.com/itsmichaelbtw/env-agent/compare/v2.0.0...v2.1.0) (2022-11-13)
 
 
 ### What's New
@@ -13,6 +13,8 @@ All notable changes to this project will be documented in this file. See [standa
 ### Fixed
 
 * incorrect build folder for v2.0.0 ([5aa40e0](https://github.com/itsmichaelbtw/env-agent/commit/5aa40e04758f0fb6c9591d7f8640b9fcc36a5661))
+* pre build cmd somehow causing `vnull` tags to be produced ([5d31a68](https://github.com/itsmichaelbtw/env-agent/commit/5d31a6884ce64d9e80900fde17808a07b6fcc1e3))
+* run build command before standard-version ([6b09bef](https://github.com/itsmichaelbtw/env-agent/commit/6b09bef680d9be6e93a4494ad10898ef31bfd8ec))
 
 ## [2.0.0](https://github.com/itsmichaelbtw/env-agent/compare/v1.2.0...v2.0.0) (2022-11-11)
 
