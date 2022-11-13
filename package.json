@@ -24,11 +24,11 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && rollup -c rollup.config.js --bundleConfigAsCjs",
     "build:watch": "npm run build -- --watch",
-    "release:patch": "npm run build && standard-version --release-as patch",
-    "release:minor": "npm run build && standard-version --release-as minor",
-    "release:major": "npm run build && standard-version --release-as major",
-    "release": "npm run build && standard-version",
-    "push:tags": "git push origin --follow-tags",
+    "release:patch": "npm run release -- --release-as patch",
+    "release:minor": "npm run release -- --release-as minor",
+    "release:major": "npm run release -- --release-as major",
+    "release": "npm run build && standard-version -a",
+    "push:tags": "git push --follow-tags origin main",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -64,6 +64,7 @@
   },
   "standard-version": {
     "scripts": {
+      "prerelease": "git add dist",
       "posttag": "npm run push:tags"
     }
   },
