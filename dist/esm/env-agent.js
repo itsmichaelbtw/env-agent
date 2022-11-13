@@ -1,5 +1,5 @@
 /**
-    * env-agent v1.1.1
+    * env-agent v2.0.0
     * https://github.com/itsmichaelbtw/env-agent#readme
     * (c) 2022 Michael Cizek
     * @license MIT
@@ -185,11 +185,26 @@ var EnvAgent = /*#__PURE__*/function () {
         debug(message, color);
       }
     }
+
+    /**
+     * Creates a new instance of EnvAgent. Not sure why you would want to
+     * do this, but it's here if you need it.
+     */
   }, {
     key: "create",
     value: function create() {
       return new EnvAgent();
     }
+
+    /**
+     * Parses a Buffer or string and returns an object containing the environment variables.
+     *
+     * ```
+     * const env = envAgent.parse(fs.readFileSync(".env", "utf8"));
+     * // or
+     * const env = envAgent.parse(`FOO=bar\nBAR=baz`);
+     * ```
+     */
   }, {
     key: "parse",
     value: function parse(file) {
@@ -234,9 +249,20 @@ var EnvAgent = /*#__PURE__*/function () {
         return {};
       }
     }
+
+    /**
+     * The main entry point for loading the .env file. This method will
+     * attempt to load the .env file and set the environment variables.
+     *
+     * You can pass in an object to configure the behavior of the method.
+     *
+     * ```
+     * const env = envAgent.load();
+     * ```
+     */
   }, {
-    key: "configure",
-    value: function configure() {
+    key: "load",
+    value: function load() {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       this.$options = shallowMerge(defaults, options);
       try {
@@ -262,6 +288,13 @@ var EnvAgent = /*#__PURE__*/function () {
         return {};
       }
     }
+
+    /**
+     * A method to expand variables defined in your .env file. It is
+     * recommended to expand variables when calling `load()`, but this
+     * method is available if you need to expand variables at a later
+     * time.
+     */
   }, {
     key: "expand",
     value: function expand() {
@@ -305,6 +338,10 @@ var EnvAgent = /*#__PURE__*/function () {
       }
       return variables;
     }
+
+    /**
+     * Retrieve a single environment variable from `process.env`.
+     */
   }, {
     key: "get",
     value: function get(key) {
@@ -318,6 +355,10 @@ var EnvAgent = /*#__PURE__*/function () {
       }
       return value;
     }
+
+    /**
+     * Sets a single environment variable in `process.env`.
+     */
   }, {
     key: "set",
     value: function set(key, value) {

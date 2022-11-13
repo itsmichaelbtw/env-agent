@@ -9,10 +9,10 @@ interface EnvManipulator {
      */
     parse(file: Buffer | string): EnvType;
     /**
-     * Configures the environment variables by reading the .env file and sets the variable
+     * Loads the environment variables by reading the .env file and sets the variable
      * if it does not exist.
      */
-    configure(options: ConfigurableOptions): EnvType;
+    load(options: ConfigurableOptions): EnvType;
     /**
      * Programmatically set environment variables that are only available in the current process.
      */
@@ -87,11 +87,46 @@ declare class EnvAgent implements EnvManipulator {
     private resolvePathName;
     private handleErrorException;
     private handleDebug;
+    /**
+     * Creates a new instance of EnvAgent. Not sure why you would want to
+     * do this, but it's here if you need it.
+     */
     create(): EnvAgent;
+    /**
+     * Parses a Buffer or string and returns an object containing the environment variables.
+     *
+     * ```
+     * const env = envAgent.parse(fs.readFileSync(".env", "utf8"));
+     * // or
+     * const env = envAgent.parse(`FOO=bar\nBAR=baz`);
+     * ```
+     */
     parse(file: Buffer | string): EnvType;
-    configure(options?: ConfigurableOptions): EnvType;
+    /**
+     * The main entry point for loading the .env file. This method will
+     * attempt to load the .env file and set the environment variables.
+     *
+     * You can pass in an object to configure the behavior of the method.
+     *
+     * ```
+     * const env = envAgent.load();
+     * ```
+     */
+    load(options?: ConfigurableOptions): EnvType;
+    /**
+     * A method to expand variables defined in your .env file. It is
+     * recommended to expand variables when calling `load()`, but this
+     * method is available if you need to expand variables at a later
+     * time.
+     */
     expand(variables?: EnvType, mode?: ExpansionMode, forceSet?: boolean): EnvType;
+    /**
+     * Retrieve a single environment variable from `process.env`.
+     */
     get(key?: string): string;
+    /**
+     * Sets a single environment variable in `process.env`.
+     */
     set(key: string, value: string): void;
     reset(): void;
 }
