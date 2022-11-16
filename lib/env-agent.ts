@@ -41,7 +41,7 @@ interface EnvManipulator {
     /**
      * Retrieve an environment variable from the current process.
      */
-    get(key?: string): string;
+    get(key?: string): string | undefined;
 
     /**
      * Default filename for the .env file.
@@ -327,7 +327,7 @@ class EnvAgent implements EnvManipulator {
     /**
      * Retrieve a single environment variable from `process.env`.
      */
-    public get(key?: string): string {
+    public get(key?: string): string | undefined {
         if (isUndefined(key)) {
             this.handleDebug(
                 "Attempted to retrieve an environment variable, but no key was passed",
@@ -338,11 +338,6 @@ class EnvAgent implements EnvManipulator {
         }
 
         const value = process.env[key];
-
-        if (isUndefined(value)) {
-            return "";
-        }
-
         return value;
     }
 

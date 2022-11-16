@@ -109,7 +109,7 @@ describe("envAgent", () => {
             });
 
             chai.expect(hasOwnProperty(process.env, "MISSING_VAR")).to.be.false;
-            chai.expect(agent.get("MISSING_VAR")).to.equal("");
+            chai.expect(agent.get("MISSING_VAR")).to.equal(undefined);
         });
 
         it("should expand variables when `expand` is set to `project`", () => {
