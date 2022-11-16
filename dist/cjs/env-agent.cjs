@@ -1,5 +1,5 @@
 /**
-    * env-agent v2.0.0
+    * env-agent v2.1.0
     * https://github.com/itsmichaelbtw/env-agent#readme
     * (c) 2022 Michael Cizek
     * @license MIT
@@ -354,9 +354,6 @@ var EnvAgent = /*#__PURE__*/function () {
         return "";
       }
       var value = process.env[key];
-      if (isUndefined(value)) {
-        return "";
-      }
       return value;
     }
 

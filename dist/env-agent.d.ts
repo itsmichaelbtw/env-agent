@@ -20,7 +20,7 @@ interface EnvManipulator {
     /**
      * Retrieve an environment variable from the current process.
      */
-    get(key?: string): string;
+    get(key?: string): string | undefined;
     /**
      * Default filename for the .env file.
      */
@@ -123,7 +123,7 @@ declare class EnvAgent implements EnvManipulator {
     /**
      * Retrieve a single environment variable from `process.env`.
      */
-    get(key?: string): string;
+    get(key?: string): string | undefined;
     /**
      * Sets a single environment variable in `process.env`.
      */
