@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.2](https://github.com/itsmichaelbtw/env-agent/compare/v2.1.1...v2.1.2) (2022-11-21)
+
+
+### Fixed
+
+* es module imports were targetting incorrect build output ([e26bab0](https://github.com/itsmichaelbtw/env-agent/commit/e26bab0cc9377929652ff0ed150607bdd2d854a5))
+
 ### [2.1.1](https://github.com/itsmichaelbtw/env-agent/compare/v2.1.0...v2.1.1) (2022-11-16)
 
 

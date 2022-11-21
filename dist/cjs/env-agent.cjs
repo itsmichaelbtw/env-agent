@@ -1,5 +1,4 @@
 /**
-    * env-agent v2.1.0
     * https://github.com/itsmichaelbtw/env-agent#readme
     * (c) 2022 Michael Cizek
     * @license MIT
