@@ -145,6 +145,10 @@ Sets a single environment variable in `process.env`. Ensures configuration rules
 - If `strict` is `true`, the variable must be defined before being added to `process.env`.
 - If `overwrite` is `false`, the variable must not already exist in `process.env`.
 
+### `delete(key)`
+
+Deletes a single environment variable from `process.env`.
+
 ## CHANGELOG
 
 See [CHANGELOG.md](CHANGELOG.md)
