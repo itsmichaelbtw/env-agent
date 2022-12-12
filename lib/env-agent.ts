@@ -370,6 +370,16 @@ class EnvAgent implements EnvManipulator {
         this.handleDebug(`Set ${key} to process.env`, "green");
     }
 
+    /**
+     * Deletes a single environment variable from `process.env`.
+     */
+    public delete(key: string): void {
+        if (hasOwnProperty(process.env, key)) {
+            delete process.env[key];
+            this.handleDebug(`Deleted ${key} from process.env`, "green");
+        }
+    }
+
     public reset(): void {
         this.$options = {};
     }
