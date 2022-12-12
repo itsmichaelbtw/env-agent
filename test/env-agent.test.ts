@@ -243,4 +243,14 @@ describe("envAgent", () => {
         chai.expect(envAgent.get("TEST_VAR")).to.equal("test");
         chai.expect(hasOwnProperty(process.env, "TEST_VAR")).to.be.true;
     });
+
+    it("should delete an environment variable", () => {
+        envAgent.load();
+
+        chai.expect(hasOwnProperty(process.env, "PORT")).to.be.true;
+
+        envAgent.delete("PORT");
+
+        chai.expect(hasOwnProperty(process.env, "PORT")).to.be.false;
+    });
 });
