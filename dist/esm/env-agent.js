@@ -369,6 +369,18 @@ var EnvAgent = /*#__PURE__*/function () {
       process.env[key] = value;
       this.handleDebug("Set ".concat(key, " to process.env"), "green");
     }
+
+    /**
+     * Deletes a single environment variable from `process.env`.
+     */
+  }, {
+    key: "delete",
+    value: function _delete(key) {
+      if (hasOwnProperty(process.env, key)) {
+        delete process.env[key];
+        this.handleDebug("Deleted ".concat(key, " from process.env"), "green");
+      }
+    }
   }, {
     key: "reset",
     value: function reset() {

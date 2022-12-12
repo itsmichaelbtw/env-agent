@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/itsmichaelbtw/env-agent/compare/v2.1.2...v2.2.0) (2022-12-12)
+
+
+### What's New
+
+* added support to delete environment variables ([6795670](https://github.com/itsmichaelbtw/env-agent/commit/6795670f466c508641ea6fc5e671c45a29fc6489))
+
 ### [2.1.2](https://github.com/itsmichaelbtw/env-agent/compare/v2.1.1...v2.1.2) (2022-11-21)
 
 
