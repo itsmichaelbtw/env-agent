@@ -76,6 +76,10 @@ interface ConfigurableOptions {
      * Expanding variables will ensure the value is also defined. If not, the variable
      * that was attempted will be removed from the end result.
      *
+     * If `template` is set and `strict` is `true`, any missing variables will throw an error,
+     * and any variables that are defined in the template but not in the current .env file
+     * will be removed from the end result.
+     *
      * Defaults to `false`.
      */
     strict?: boolean;
@@ -108,15 +112,26 @@ interface ConfigurableOptions {
      * Defaults to `false`.
      */
     debug?: boolean;
+
+    /**
+     * Uses another .env file as a template for the current .env file,
+     * such as a .env.example file. Any missing variables will be removed
+     * from the end result unless `strict` is set to `true`, in which case
+     * an error will be thrown.
+     *
+     * Defaults to `undefined`.
+     */
+    template?: string;
 }
 
 const defaults: ConfigurableOptions = {
-    silent: true,
+    silent: false,
     strict: false,
     overwrite: false,
     encoding: "utf8",
     expand: "none",
-    debug: false
+    debug: false,
+    template: undefined
 };
 
 class EnvAgent implements EnvManipulator {
@@ -169,7 +184,7 @@ class EnvAgent implements EnvManipulator {
      * const env = envAgent.parse(`FOO=bar\nBAR=baz`);
      * ```
      */
-    public parse(file: Buffer | string): EnvType {
+    public parse(file: Buffer | string, bypassStrict = false): EnvType {
         try {
             const environmentVariables: EnvType = {};
             const fileAsString = file.toString();
@@ -197,7 +212,7 @@ class EnvAgent implements EnvManipulator {
                 value = value.trim();
 
                 if (key) {
-                    if (this.options.strict && !value) {
+                    if (this.options.strict && !value && !bypassStrict) {
                         continue;
                     }
 
@@ -232,6 +247,27 @@ class EnvAgent implements EnvManipulator {
 
             const file = fs.readFileSync(envPath, { encoding });
 
+            let template: EnvType | undefined = undefined;
+
+            if (this.options.template) {
+                const templateFile = fs.readFileSync(this.options.template, {
+                    encoding
+                });
+
+                const templateEnv = this.parse(templateFile, true);
+
+                if (Object.keys(templateEnv).length === 0) {
+                    this.handleDebug(
+                        "A template was provided, but it is empty. You may have an empty template file.",
+                        "yellow"
+                    );
+
+                    return {};
+                }
+
+                template = templateEnv;
+            }
+
             this.handleDebug("Found .env file", "green");
 
             const env = this.parse(file);
@@ -247,6 +283,27 @@ class EnvAgent implements EnvManipulator {
             }
 
             this.expand(env, this.options.expand, false);
+
+            if (template) {
+                const enforcedKeys = Object.keys(template);
+                const envKeys = Object.keys(env);
+
+                for (const key of envKeys) {
+                    if (enforcedKeys.includes(key)) {
+                        continue;
+                    }
+
+                    const message = `The environment variable "${key}" is not in your .env template file.`;
+
+                    if (this.options.strict) {
+                        this.handleErrorException(new Error(message));
+                    } else {
+                        this.handleDebug(message, "yellow");
+                    }
+
+                    delete env[key];
+                }
+            }
 
             for (const key in env) {
                 this.set(key, env[key]);

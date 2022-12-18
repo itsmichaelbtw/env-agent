@@ -22,15 +22,24 @@ const environmentVariables = `
     EXPAND_RECURSIVE=\${PORT} \${PASSWORD} \${NODE_ENV}
 `;
 
+const templateVariables = `
+    PORT=
+    NODE_ENV=
+    TEMPLATE_MISSING_KEY=
+    MISSING_VAR=
+`;
+
 const parsedEnvironmentVariables = envAgent.parse(environmentVariables);
 
 describe("envAgent", () => {
     before(() => {
         fs.writeFileSync(DOTENV_FILENAME, environmentVariables);
+        fs.writeFileSync(".env.template", templateVariables);
     });
 
     after(() => {
         fs.unlinkSync(DOTENV_FILENAME);
+        fs.unlinkSync(".env.template");
     });
 
     afterEach(() => {
@@ -137,6 +146,33 @@ describe("envAgent", () => {
             agent.load(options);
 
             chai.expect(agent.options.path).to.equal(options.path);
+        });
+
+        it("should properly set the variables based on the `template` option", () => {
+            const agent = envAgent.create();
+
+            const loadedEnv = agent.load({
+                template: ".env.template"
+            });
+
+            const env = {
+                PORT: "3000",
+                NODE_ENV: "development",
+                MISSING_VAR: ""
+            };
+
+            chai.expect(loadedEnv).to.deep.equal(env);
+        });
+
+        it("should throw an error if there is a missing key in the template", () => {
+            const agent = envAgent.create();
+
+            chai.expect(() =>
+                agent.load({
+                    template: ".env.template",
+                    strict: true
+                })
+            ).to.throw();
         });
     });
 

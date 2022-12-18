@@ -69,6 +69,7 @@ loads the environment variables defined in your `.env` file. This function shoul
 | overwrite | boolean | false         | Overwrite existing environment variables.                                              |
 | encoding  | string  | 'utf8'        | The encoding of the `.env` file when reading.                                          |
 | debug     | boolean | false         | Show debug messages when loading the `.env` file.                                      |
+| template  | string  | undefined     | Define a template to validate the `.env` file against.                                 |
 
 ```js
 envAgent.load({
