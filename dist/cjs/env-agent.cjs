@@ -145,12 +145,13 @@ var DOTENV_LINE = /^\s*([^\#]+)\s*=\s*([^#]*)/m;
 var DOTENV_EXPANSION = /\$\{?(\w+)\}?/g;
 var DOTENV_EXPANSION_KEY = /\$|\{|\}/g;
 var defaults = {
-  silent: true,
+  silent: false,
   strict: false,
   overwrite: false,
   encoding: "utf8",
   expand: "none",
-  debug: false
+  debug: false,
+  template: undefined
 };
 var EnvAgent = /*#__PURE__*/function () {
   function EnvAgent() {
@@ -211,6 +212,7 @@ var EnvAgent = /*#__PURE__*/function () {
   }, {
     key: "parse",
     value: function parse(file) {
+      var bypassStrict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       try {
         var environmentVariables = {};
         var fileAsString = file.toString();
@@ -235,7 +237,7 @@ var EnvAgent = /*#__PURE__*/function () {
             _key = _key.trim();
             _value = _value.trim();
             if (_key) {
-              if (this.options.strict && !_value) {
+              if (this.options.strict && !_value && !bypassStrict) {
                 continue;
               }
               environmentVariables[_key] = removeQuotes(_value);
@@ -274,6 +276,18 @@ var EnvAgent = /*#__PURE__*/function () {
         var _file = fs.readFileSync(envPath, {
           encoding: encoding
         });
+        var template = undefined;
+        if (this.options.template) {
+          var templateFile = fs.readFileSync(this.options.template, {
+            encoding: encoding
+          });
+          var templateEnv = this.parse(templateFile, true);
+          if (Object.keys(templateEnv).length === 0) {
+            this.handleDebug("A template was provided, but it is empty. You may have an empty template file.", "yellow");
+            return {};
+          }
+          template = templateEnv;
+        }
         this.handleDebug("Found .env file", "green");
         var env = this.parse(_file);
         this.handleDebug("Parsed .env file", "green");
@@ -282,8 +296,25 @@ var EnvAgent = /*#__PURE__*/function () {
           return {};
         }
         this.expand(env, this.options.expand, false);
-        for (var _key2 in env) {
-          this.set(_key2, env[_key2]);
+        if (template) {
+          var enforcedKeys = Object.keys(template);
+          var envKeys = Object.keys(env);
+          for (var _i = 0, _envKeys = envKeys; _i < _envKeys.length; _i++) {
+            var _key2 = _envKeys[_i];
+            if (enforcedKeys.includes(_key2)) {
+              continue;
+            }
+            var message = "The environment variable \"".concat(_key2, "\" is not in your .env template file.");
+            if (this.options.strict) {
+              this.handleErrorException(new Error(message));
+            } else {
+              this.handleDebug(message, "yellow");
+            }
+            delete env[_key2];
+          }
+        }
+        for (var _key3 in env) {
+          this.set(_key3, env[_key3]);
         }
         return env;
       } catch (error) {
@@ -308,8 +339,8 @@ var EnvAgent = /*#__PURE__*/function () {
         return variables;
       }
       var env = mode === "project" ? variables : process.env;
-      for (var _key3 in variables) {
-        var _value2 = variables[_key3];
+      for (var _key4 in variables) {
+        var _value2 = variables[_key4];
         if (typeof _value2 !== "string") {
           continue;
         }
@@ -329,14 +360,14 @@ var EnvAgent = /*#__PURE__*/function () {
           return acc;
         }, _value2);
         if (this.options.strict && !attemptedExpansion) {
-          delete variables[_key3];
+          delete variables[_key4];
           continue;
         }
         var expandedValue = removeQuotes(attemptedExpansion.trim());
-        variables[_key3] = expandedValue;
+        variables[_key4] = expandedValue;
         if (forceSet) {
-          process.env[_key3] = expandedValue;
-          this.handleDebug("Expanded ".concat(_key3), "green");
+          process.env[_key4] = expandedValue;
+          this.handleDebug("Expanded ".concat(_key4), "green");
         }
       }
       return variables;

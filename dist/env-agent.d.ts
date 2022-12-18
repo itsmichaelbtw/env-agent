@@ -51,6 +51,10 @@ interface ConfigurableOptions {
      * Expanding variables will ensure the value is also defined. If not, the variable
      * that was attempted will be removed from the end result.
      *
+     * If `template` is set and `strict` is `true`, any missing variables will throw an error,
+     * and any variables that are defined in the template but not in the current .env file
+     * will be removed from the end result.
+     *
      * Defaults to `false`.
      */
     strict?: boolean;
@@ -79,6 +83,15 @@ interface ConfigurableOptions {
      * Defaults to `false`.
      */
     debug?: boolean;
+    /**
+     * Uses another .env file as a template for the current .env file,
+     * such as a .env.example file. Any missing variables will be removed
+     * from the end result unless `strict` is set to `true`, in which case
+     * an error will be thrown.
+     *
+     * Defaults to `undefined`.
+     */
+    template?: string;
 }
 declare class EnvAgent implements EnvManipulator {
     private $options;
@@ -101,7 +114,7 @@ declare class EnvAgent implements EnvManipulator {
      * const env = envAgent.parse(`FOO=bar\nBAR=baz`);
      * ```
      */
-    parse(file: Buffer | string): EnvType;
+    parse(file: Buffer | string, bypassStrict?: boolean): EnvType;
     /**
      * The main entry point for loading the .env file. This method will
      * attempt to load the .env file and set the environment variables.
