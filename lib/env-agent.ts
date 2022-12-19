@@ -257,12 +257,9 @@ class EnvAgent implements EnvManipulator {
                 const templateEnv = this.parse(templateFile, true);
 
                 if (Object.keys(templateEnv).length === 0) {
-                    this.handleDebug(
-                        "A template was provided, but it is empty. You may have an empty template file.",
-                        "yellow"
+                    throw new Error(
+                        "A template was provided, but it is empty. You may have an empty template file."
                     );
-
-                    return {};
                 }
 
                 template = templateEnv;
@@ -274,19 +271,17 @@ class EnvAgent implements EnvManipulator {
 
             this.handleDebug("Parsed .env file", "green");
 
-            if (Object.keys(env).length === 0) {
-                this.handleDebug(
-                    "No environment variables found. You may have an empty .env file",
-                    "yellow"
-                );
-                return {};
-            }
-
             this.expand(env, this.options.expand, false);
 
             if (template) {
                 const enforcedKeys = Object.keys(template);
                 const envKeys = Object.keys(env);
+
+                if (envKeys.length === 0) {
+                    throw new Error(
+                        "The .env file is empty. You may have an empty .env file."
+                    );
+                }
 
                 for (const key of envKeys) {
                     if (enforcedKeys.includes(key)) {

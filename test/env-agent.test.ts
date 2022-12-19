@@ -35,11 +35,13 @@ describe("envAgent", () => {
     before(() => {
         fs.writeFileSync(DOTENV_FILENAME, environmentVariables);
         fs.writeFileSync(".env.template", templateVariables);
+        fs.writeFileSync(".env.empty", "");
     });
 
     after(() => {
         fs.unlinkSync(DOTENV_FILENAME);
         fs.unlinkSync(".env.template");
+        fs.unlinkSync(".env.empty");
     });
 
     afterEach(() => {
@@ -163,12 +165,50 @@ describe("envAgent", () => {
 
             chai.expect(loadedEnv).to.deep.equal(env);
         });
+    });
+
+    describe("templates", () => {
+        it("should only load variables from the template", () => {
+            const agent = envAgent.create();
+
+            agent.load({
+                template: ".env.template"
+            });
+
+            chai.expect(agent.get("PORT")).to.equal("3000");
+            chai.expect(agent.get("NODE_ENV")).to.equal("development");
+            chai.expect(agent.get("MISSING_VAR")).to.equal("");
+            chai.expect(agent.get("TEMPLATE_MISSING_KEY")).to.equal(undefined);
+            chai.expect(agent.get("EXPAND_MISSING_VAR")).to.equal(undefined);
+        });
 
         it("should throw an error if there is a missing key in the template", () => {
             const agent = envAgent.create();
 
             chai.expect(() =>
                 agent.load({
+                    template: ".env.template",
+                    strict: true
+                })
+            ).to.throw();
+        });
+
+        it("should throw an error if the template file is empty", () => {
+            const agent = envAgent.create();
+
+            chai.expect(() =>
+                agent.load({
+                    template: ".env.empty"
+                })
+            ).to.throw();
+        });
+
+        it("should throw an error if the `.env` file is empty", () => {
+            const agent = envAgent.create();
+
+            chai.expect(() =>
+                agent.load({
+                    path: ".env.empty",
                     template: ".env.template",
                     strict: true
                 })
