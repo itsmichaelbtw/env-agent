@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.1](https://github.com/itsmichaelbtw/env-agent/compare/v2.3.0...v2.3.1) (2022-12-19)
+
+
+### Fixed
+
+* **env-agent:** providing an empty `.env` with a template was not throwing errors correctly ([505cd1d](https://github.com/itsmichaelbtw/env-agent/commit/505cd1dbe47e9704a0a3d07c0ae2c426e26665ed))
+
 ## [2.3.0](https://github.com/itsmichaelbtw/env-agent/compare/v2.2.0...v2.3.0) (2022-12-18)
 
 

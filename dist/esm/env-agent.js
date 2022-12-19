@@ -279,22 +279,20 @@ var EnvAgent = /*#__PURE__*/function () {
           });
           var templateEnv = this.parse(templateFile, true);
           if (Object.keys(templateEnv).length === 0) {
-            this.handleDebug("A template was provided, but it is empty. You may have an empty template file.", "yellow");
-            return {};
+            throw new Error("A template was provided, but it is empty. You may have an empty template file.");
           }
           template = templateEnv;
         }
         this.handleDebug("Found .env file", "green");
         var env = this.parse(_file);
         this.handleDebug("Parsed .env file", "green");
-        if (Object.keys(env).length === 0) {
-          this.handleDebug("No environment variables found. You may have an empty .env file", "yellow");
-          return {};
-        }
         this.expand(env, this.options.expand, false);
         if (template) {
           var enforcedKeys = Object.keys(template);
           var envKeys = Object.keys(env);
+          if (envKeys.length === 0) {
+            throw new Error("The .env file is empty. You may have an empty .env file.");
+          }
           for (var _i = 0, _envKeys = envKeys; _i < _envKeys.length; _i++) {
             var _key2 = _envKeys[_i];
             if (enforcedKeys.includes(_key2)) {
