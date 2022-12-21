@@ -165,6 +165,16 @@ var EnvAgent = /*#__PURE__*/function () {
       return this.$options;
     }
   }, {
+    key: "isProduction",
+    get: function get() {
+      return this.get("NODE_ENV") === "production";
+    }
+  }, {
+    key: "isDevelopment",
+    get: function get() {
+      return this.get("NODE_ENV") === "development";
+    }
+  }, {
     key: "resolvePathName",
     value: function resolvePathName() {
       if (this.options.path) {

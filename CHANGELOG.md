@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/itsmichaelbtw/env-agent/compare/v2.3.1...v2.4.0) (2022-12-21)
+
+
+### What's New
+
+* added accessors to check if current env is either production or development ([adc0be4](https://github.com/itsmichaelbtw/env-agent/commit/adc0be4a362119ea41544cc0c4900987b5801561))
+
 ### [2.3.1](https://github.com/itsmichaelbtw/env-agent/compare/v2.3.0...v2.3.1) (2022-12-19)
 
 

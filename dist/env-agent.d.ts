@@ -97,6 +97,8 @@ declare class EnvAgent implements EnvManipulator {
     private $options;
     DOTENV_FILENAME: string;
     get options(): ConfigurableOptions;
+    get isProduction(): boolean;
+    get isDevelopment(): boolean;
     private resolvePathName;
     private handleErrorException;
     private handleDebug;
