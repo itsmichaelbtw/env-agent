@@ -77,6 +77,24 @@ describe("envAgent", () => {
         );
     });
 
+    it("should return true if the NODE_ENV is set to `production`", () => {
+        const agent = envAgent.create();
+
+        envAgent.set("NODE_ENV", "production");
+
+        chai.expect(agent.isProduction).to.be.true;
+        chai.expect(agent.isDevelopment).to.be.false;
+    });
+
+    it("should return true if NODE_ENV is set to `development`", () => {
+        const agent = envAgent.create();
+
+        envAgent.set("NODE_ENV", "development");
+
+        chai.expect(agent.isDevelopment).to.be.true;
+        chai.expect(agent.isProduction).to.be.false;
+    });
+
     describe("config", () => {
         it("should throw an error when `silent` is false (silent)", () => {
             const agent = envAgent.create();

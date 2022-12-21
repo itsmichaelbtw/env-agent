@@ -143,6 +143,14 @@ class EnvAgent implements EnvManipulator {
         return this.$options;
     }
 
+    get isProduction() {
+        return this.get("NODE_ENV") === "production";
+    }
+
+    get isDevelopment() {
+        return this.get("NODE_ENV") === "development";
+    }
+
     private resolvePathName(): string {
         if (this.options.path) {
             return path.resolve(this.options.path);
