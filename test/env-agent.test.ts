@@ -338,6 +338,15 @@ describe("envAgent", () => {
         chai.expect(hasOwnProperty(process.env, "TEST_VAR")).to.be.true;
     });
 
+    it("should set an environment variable and overwrite it", () => {
+        const key = "ALLOW_INLINE_OVERWRITES";
+        envAgent.set(key, "default");
+        envAgent.set(key, "overwritten", true);
+
+        chai.expect(hasOwnProperty(process.env, key)).to.be.true;
+        chai.expect(envAgent.get(key)).to.equal("overwritten");
+    });
+
     it("should delete an environment variable", () => {
         envAgent.load();
 

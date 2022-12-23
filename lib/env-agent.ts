@@ -404,11 +404,10 @@ class EnvAgent implements EnvManipulator {
     /**
      * Sets a single environment variable in `process.env`.
      */
-    public set(key: string, value: string): void {
-        if (
-            hasOwnProperty(process.env, key) &&
-            this.options.overwrite !== true
-        ) {
+    public set(key: string, value: string, overwrite = false): void {
+        const allowOverwrite = overwrite || this.options.overwrite;
+
+        if (hasOwnProperty(process.env, key) && allowOverwrite !== true) {
             this.handleDebug(
                 `Environment variable ${key} already exists, skipping`,
                 "yellow"

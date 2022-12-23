@@ -139,12 +139,13 @@ envAgent.load({ expand: "project" });
 
 Retrieve a single environment variable from `process.env`.
 
-### `set(key, value)`
+### `set(key, value[, overwrite])`
 
 Sets a single environment variable in `process.env`. Ensures configuration rules are followed:
 
 - If `strict` is `true`, the variable must be defined before being added to `process.env`.
 - If `overwrite` is `false`, the variable must not already exist in `process.env`.
+- If `expand` is `true`, the variable will be overwritten with the value.
 
 ### `delete(key)`
 
