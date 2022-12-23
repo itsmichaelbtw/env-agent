@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/itsmichaelbtw/env-agent/compare/v2.4.0...v2.5.0) (2022-12-23)
+
+
+### What's New
+
+* **env-agent:** allow inline overwrites when setting a variable ([929ce73](https://github.com/itsmichaelbtw/env-agent/commit/929ce73619c5abd9871119f9effe29df0540c491))
+
 ## [2.4.0](https://github.com/itsmichaelbtw/env-agent/compare/v2.3.1...v2.4.0) (2022-12-21)
 
 

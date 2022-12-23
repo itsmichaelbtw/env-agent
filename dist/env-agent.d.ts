@@ -142,7 +142,7 @@ declare class EnvAgent implements EnvManipulator {
     /**
      * Sets a single environment variable in `process.env`.
      */
-    set(key: string, value: string): void;
+    set(key: string, value: string, overwrite?: boolean): void;
     /**
      * Deletes a single environment variable from `process.env`.
      */

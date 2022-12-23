@@ -401,7 +401,9 @@ var EnvAgent = /*#__PURE__*/function () {
   }, {
     key: "set",
     value: function set(key, value) {
-      if (hasOwnProperty(process.env, key) && this.options.overwrite !== true) {
+      var overwrite = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var allowOverwrite = overwrite || this.options.overwrite;
+      if (hasOwnProperty(process.env, key) && allowOverwrite !== true) {
         this.handleDebug("Environment variable ".concat(key, " already exists, skipping"), "yellow");
         return;
       }
