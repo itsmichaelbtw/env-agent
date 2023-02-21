@@ -11,7 +11,8 @@ import {
 import { debug, DebugColors } from "./debug";
 
 const DOTENV_FILENAME = ".env";
-const DOTENV_LINE = /^\s*([^\#]+)\s*=\s*([^#]*)/m;
+const DOTENV_LINE =
+    /(?:^|^)\s*([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/m;
 const DOTENV_EXPANSION = /\$\{?(\w+)\}?/g;
 const DOTENV_EXPANSION_KEY = /\$|\{|\}/g;
 
@@ -122,6 +123,18 @@ interface ConfigurableOptions {
      * Defaults to `undefined`.
      */
     template?: string;
+
+    /**
+     * If a template is provided, by default, only the keys that match
+     * the template will be used. If you wish to have a **1:1** match, set
+     * this to `true`.
+     *
+     * This will cause an error to be thrown if there are any missing
+     * variables in the current .env file that are defined in the template.
+     *
+     * Defaults to `false`.
+     */
+    enforceTemplate?: boolean;
 }
 
 const defaults: ConfigurableOptions = {
