@@ -1,6 +1,6 @@
 /**
     * https://github.com/itsmichaelbtw/env-agent#readme
-    * (c) 2022 Michael Cizek
+    * (c) 2023 Michael Cizek
     * @license MIT
     */
 
@@ -137,7 +137,7 @@ function debug(message, color) {
 }
 
 var DOTENV_FILENAME = ".env";
-var DOTENV_LINE = /^\s*([^\#]+)\s*=\s*([^#]*)/m;
+var DOTENV_LINE = /(?:^|^)\s*([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/m;
 var DOTENV_EXPANSION = /\$\{?(\w+)\}?/g;
 var DOTENV_EXPANSION_KEY = /\$|\{|\}/g;
 var defaults = {

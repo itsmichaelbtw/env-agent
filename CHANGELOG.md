@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.5.1](https://github.com/itsmichaelbtw/env-agent/compare/v2.5.0...v2.5.1) (2023-02-21)
+
+
+### Fixed
+
+* regex matcher incorrectly matching query strings ([d30af10](https://github.com/itsmichaelbtw/env-agent/commit/d30af106c534437002578dc339ea12c45dbb7f3d))
+
 ## [2.5.0](https://github.com/itsmichaelbtw/env-agent/compare/v2.4.0...v2.5.0) (2022-12-23)
 
 

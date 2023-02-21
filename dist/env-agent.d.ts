@@ -92,6 +92,17 @@ interface ConfigurableOptions {
      * Defaults to `undefined`.
      */
     template?: string;
+    /**
+     * If a template is provided, by default, only the keys that match
+     * the template will be used. If you wish to have a **1:1** match, set
+     * this to `true`.
+     *
+     * This will cause an error to be thrown if there are any missing
+     * variables in the current .env file that are defined in the template.
+     *
+     * Defaults to `false`.
+     */
+    enforceTemplate?: boolean;
 }
 declare class EnvAgent implements EnvManipulator {
     private $options;
